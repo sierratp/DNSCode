@@ -85,31 +85,28 @@ def testPort3():
 # uses sockets 
 # WORKING??? gives open ports, still can't read last files 
 def testPort4(host, port):
-
-    try:
-        s = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
-        s.settimeout(1)
-        result = s.connect_ex((host, port))
-
-        with open('output.csv', 'a', newline='') as o:
-            outfile = csv.writer(o)
+    with open('output.csv', 'a', newline='') as o:
+        outfile = csv.writer(o)
+        try:
+            s = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
+            s.settimeout(1)
+            result = s.connect_ex((host, port))
+        
             if result == 0:
-                #print(f"Port {port} is open on {host}")
                 outfile.writerow([host,"open"])
             else:
-                #print(f"Port {port} is closed on {host}")
                 outfile.writerow([host,"closed"])
-       
-        s.close()
+        
+            s.close()
 
-    except:
-        print(f"Error occurred while testing port: {port}")
+        except:
+            outfile.writerow([host,"error"])
 
 
 def openPortTester():
     with open('test3.csv', 'r') as file:
         reader = csv.reader(file)
-        #next(reader)
+        next(reader)
         for row in reader:
             if len(row) >= 2:
                 host = row[2]
